@@ -1,0 +1,5 @@
+use model models5
+
+run models5 {
+  input "hello realistic FRC architecture"
+}

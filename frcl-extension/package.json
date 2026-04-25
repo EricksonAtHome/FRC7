@@ -1,0 +1,26 @@
+{
+  "name": "frcl-vscode",
+  "displayName": "FRCL Language Support",
+  "description": "Syntax highlighting and language support for Fast Response Connection Language",
+  "version": "1.0.0",
+  "publisher": "frc-systems",
+  "engines": {
+    "vscode": "^1.70.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "frcl",
+      "aliases": ["FRCL", "frcl"],
+      "extensions": [".frcl"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "frcl",
+      "scopeName": "source.frcl",
+      "path": "./syntaxes/frcl.tmLanguage.json"
+    }]
+  }
+}

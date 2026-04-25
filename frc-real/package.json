@@ -1,0 +1,13 @@
+{
+  "name": "frc-real-stack",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server/index.js",
+  "bin": {
+    "frc": "./cli/frc.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "node-fetch": "^3.3.2"
+  }
+}

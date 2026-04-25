@@ -1,0 +1,12 @@
+{
+  "name": "frc-control-panel",
+  "version": "1.0.0",
+  "description": "FRC Netlify Control App & Smart Router",
+  "scripts": {
+    "start": "netlify dev"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  }
+}

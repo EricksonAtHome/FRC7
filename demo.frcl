@@ -1,0 +1,25 @@
+set env "prod"
+
+network frc.systems {
+  mode "secure"
+  protocol "frc"
+}
+
+network mobile {
+  type "5g"
+  provider "auto"
+  priority "low-latency"
+}
+
+docker "frc-runtime" {
+  image "node:20"
+  run "node ai.js"
+}
+
+use model "models5"
+
+run model models5 {
+  input "Explain FRC systems orchestration with 5G and Docker"
+}
+
+print result

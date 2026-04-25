@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eu-node
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: eu-node
+  template:
+    metadata:
+      labels:
+        app: eu-node
+    spec:
+      containers:
+        - name: eu-node
+          image: frc/eu-node:latest
+          ports:
+            - containerPort: 4001

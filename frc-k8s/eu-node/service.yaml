@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eu-service
+spec:
+  selector:
+    app: eu-node
+  ports:
+    - port: 80
+      targetPort: 4001
+  type: ClusterIP

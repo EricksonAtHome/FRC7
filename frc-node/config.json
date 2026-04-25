@@ -1,0 +1,9 @@
+{
+  "node_id": "eu-central-01",
+  "type": "ai-executor",
+  "runtime": "docker",
+  "models": ["models5", "models-core"],
+  "max_cpu": "80%",
+  "network": "frc.systems",
+  "auto_scale": true
+}

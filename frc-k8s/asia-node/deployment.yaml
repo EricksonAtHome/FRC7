@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: asia-node
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: asia-node
+  template:
+    metadata:
+      labels:
+        app: asia-node
+    spec:
+      containers:
+        - name: asia-node
+          image: frc/asia-node:latest
+          ports:
+            - containerPort: 4003

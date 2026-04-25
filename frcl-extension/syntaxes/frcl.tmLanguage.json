@@ -1,0 +1,26 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "FRCL",
+  "scopeName": "source.frcl",
+  "patterns": [
+    {
+      "name": "keyword.control.frcl",
+      "match": "\\b(use|set|run|connect|print|model|env|input|mode|auth|docker|network|image|workdir|install|protocol|latency|type|provider|fallback|priority)\\b"
+    },
+    {
+      "name": "string.quoted.double.frcl",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.frcl",
+          "match": "\\\\."
+        }
+      ]
+    },
+    {
+      "name": "comment.line.double-slash.frcl",
+      "match": "//.*$"
+    }
+  ]
+}

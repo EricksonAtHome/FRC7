@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frc-eu
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: frc-eu
+  template:
+    metadata:
+      labels:
+        app: frc-eu
+    spec:
+      containers:
+        - name: worker
+          image: frc/worker:latest
+          ports:
+            - containerPort: 4000

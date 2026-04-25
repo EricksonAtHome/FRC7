@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  api:
+    build: 
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - FRC_ENV=production
+
+  worker:
+    build: 
+      context: ..
+      dockerfile: docker/Dockerfile.worker
+    depends_on:
+      - redis
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - FRC_ENV=production
+    deploy:
+      replicas: 3
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"

@@ -1,0 +1,17 @@
+{
+  "name": "frc-runtime",
+  "version": "1.0.0",
+  "description": "Fast Response Connection Language Runtime",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "frc": "./cli.js"
+  },
+  "dependencies": {
+    "axios": "^1.15.2",
+    "chalk": "^5.3.0",
+    "dockerode": "^5.0.0",
+    "node-fetch": "^3.3.2",
+    "openai": "^6.34.0"
+  }
+}

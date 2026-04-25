@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: us-node
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: us-node
+  template:
+    metadata:
+      labels:
+        app: us-node
+    spec:
+      containers:
+        - name: us-node
+          image: frc/us-node:latest
+          ports:
+            - containerPort: 4002

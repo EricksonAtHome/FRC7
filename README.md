@@ -64,8 +64,10 @@ Here is a thorough explanation of every component folder in this repository, why
 * **What you can do:** Push this to Netlify to instantly deploy a globally distributed Edge Router with zero server maintenance.
 
 ### 9. `arduino_example/` (The Hardware IoT Client)
-* **What it is:** C++ hardware logic for microcontrollers like the ESP32.
-* **Why it exists:** To prove that FRC is universally accessible. It demonstrates how a tiny physical sensor in the real world can authenticate and push data into the FRC cloud network via HTTPS.
+* **What it is:** C++ hardware logic for microcontrollers like the ESP32 and Arduino boards.
+* **Why FRC makes IoT better:** Traditional hardware requires complex backend logic, heavy MQTT brokers, or tight coupling to a specific cloud provider to process AI logic. FRC abstracts all of this. An Arduino board simply makes a lightweight HTTP `POST` request containing FRCL instructions, and the FRC cloud network instantly parses it, routes it globally, executes the AI model, and returns a clean JSON response.
+* **How developers can use it for testing:** Developers can flash `arduino_example.ino` onto an ESP32, connect it to WiFi, and immediately see live responses from `frc.systems` in their Serial Monitor. This provides a zero-friction playground to test latency and AI model outputs on real physical devices.
+* **Using it in your own apps:** You can directly embed this HTTP architecture into smart home sensors, robotics, or industrial monitoring tools. For example, a temperature sensor could send raw data to an FRC node, where an AI model analyzes it and returns an instruction (e.g., "turn_on_cooling") directly to the microcontroller.
 
 ---
 
@@ -80,3 +82,4 @@ No matter which folder you are looking at, the systemic logic of FRC remains uni
 5. **Execution Nodes (Docker / K8s)**: Asynchronously grabs the job, runs the AI model, and returns the result.
 
 This repository is the complete blueprint for an enterprise-scale AI operating system.
+

@@ -1,4 +1,4 @@
-# 🚀 FRC (Fast Response Connection) Ecosystem
+# 🚀 FRC (Fast Response Connection) Ecosystem (BETA Open Source)
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/d6402a4e-7305-4f49-bd1c-c41798ee15da/deploy-status)](https://app.netlify.com/projects/frc7/deploys)
 

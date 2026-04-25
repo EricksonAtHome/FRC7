@@ -7,6 +7,8 @@ What started as a simple declarative language (`.frcl`) has evolved through 9 le
 
 This repository serves as the **master monorepo** for the entire FRC project. It contains every layer of the architecture: from the lightweight language parser to the production Kubernetes cluster setup.
 
+
+![FRC Image](https://raw.githubusercontent.com/EricksonAtHome/FRC7/refs/heads/main/img/1n8jky1n8jky1n8j.png)
 ---
 
 ## 🧠 What is FRC?

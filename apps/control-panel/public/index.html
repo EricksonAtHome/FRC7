@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FRC7 · Ayiti OS GoV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="atmosphere" aria-hidden="true"></div>
+  <header class="top">
+    <div class="brand"><span class="mark"></span><span class="name">FRC7</span></div>
+    <p class="tag">Ayiti OS · GoV</p>
+  </header>
+  <main>
+    <section class="hero">
+      <h1>Gouvènman AI pou Ayiti</h1>
+      <p class="lede">Run Ayiti OS models against HaitiDocs, AyitiStats, and .gouv.ht portals.</p>
+      <div class="actions">
+        <button type="button" id="runBtn" class="primary">Execute</button>
+        <button type="button" id="lintBtn" class="ghost">Lint FRCL</button>
+        <button type="button" id="modelsBtn" class="ghost">Models</button>
+      </div>
+    </section>
+    <section class="workspace">
+      <label class="field"><span>API key</span><input id="apiKey" value="ayiti_gov_test_key" /></label>
+      <label class="field"><span>Model shortcut</span>
+        <select id="model">
+          <option value="">(use FRCL)</option>
+          <option>ayiti.search</option>
+          <option>ayiti.stats</option>
+          <option>ayiti.citizen</option>
+          <option>ayiti.brh</option>
+          <option>ayiti.dgi</option>
+          <option>ayiti.mef</option>
+          <option>ayiti.alert</option>
+          <option>ayiti.translate</option>
+        </select>
+      </label>
+      <label class="field grow"><span>FRCL / input</span>
+        <textarea id="source" rows="14">set env "prod"
+region ht
+lang ht
+use model "ayiti.search"
+
+run model ayiti.search {
+  input "BRH inflation note Haiti"
+}
+
+print result</textarea>
+      </label>
+      <pre id="output" class="output">Ready.</pre>
+    </section>
+  </main>
+  <script src="/app.js" type="module"></script>
+</body>
+</html>

@@ -1,42 +1,4 @@
-#!/bin/bash
-
-COMMAND=$1
-ARG1=$2
-
-case $COMMAND in
-    run)
-        echo "📡 Transmitting to FRC Global Network..."
-        cd ../frc-node && python3 global_router.py route "$ARG1" 100
-        ;;
-    evolve)
-        echo "🔁 Triggering Level 7 Evolution Loop..."
-        cd ../frc-node && python3 self_adaptive_node.py loop
-        ;;
-    autogenesis)
-        echo "🧬 Initiating Level 8 System Autogenesis..."
-        cd ../frc-node && python3 self_evolving_node.py autogenesis
-        ;;
-    singularity)
-        echo "🌌 Initiating Level 9 System Singularity (Self-Rewriting Ecosystem)..."
-        cd ../frc-node && python3 self_rewriting_ecosystem.py singularity
-        ;;
-    health)
-        echo "🧬 Initiating global diagnostics..."
-        cd ../frc-node && python3 -c 'from self_adaptive_node import FRCNode; import json; print("Status:", json.dumps(FRCNode().health_check()))'
-        ;;
-    nodes)
-        echo "🌍 FRC LEVEL 9 METAVERSE MAP:"
-        echo "🇳🇱 EU Edge Cloud [ONLINE] - Language Syntax Evolving"
-        echo "🇩🇪 EU Central Core [ONLINE] - Spawning new models_v2"
-        echo "🇺🇸 US East Cloud [ONLINE] - Engine kernel self-modifying"
-        echo "🇸🇬 Asia Edge [ONLINE] - Optimizing compute economy"
-        ;;
-    *)
-        echo "🌍 FRC CLI (Level 9 Self-Rewriting Ecosystem):"
-        echo "  frc run <model>           - Execute AI globally"
-        echo "  frc evolve                - Trigger manual evolution (L7)"
-        echo "  frc autogenesis           - Trigger self-creation loop (L8)"
-        echo "  frc singularity           - Trigger self-rewriting loop (L9)"
-        echo "  frc nodes                 - View dynamic ecosystem status"
-        ;;
-esac
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+exec node "$ROOT/apps/cli/src/index.js" "$@"

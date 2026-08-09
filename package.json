@@ -1,0 +1,34 @@
+{
+  "name": "frc7",
+  "version": "7.1.0",
+  "private": true,
+  "description": "FRC7 — Fast Response Connection ecosystem with Ayiti OS (GoV) government models",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "test": "npm run test --workspaces --if-present && node --test tests/integration/*.test.js",
+    "lint": "node scripts/lint.mjs",
+    "demo": "node apps/cli/src/index.js run examples/basic/hello.frcl",
+    "demo:ayiti": "node apps/cli/src/index.js run examples/ayiti/search.frcl",
+    "start:gateway": "npm run start -w @frc/gateway",
+    "frc": "node apps/cli/src/index.js",
+    "dev": "node scripts/dev.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "frc",
+    "frc7",
+    "frcl",
+    "ayiti",
+    "haiti",
+    "government",
+    "ai"
+  ],
+  "license": "MIT",
+  "author": "EricksonAtHome"
+}

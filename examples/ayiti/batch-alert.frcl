@@ -1,0 +1,12 @@
+set env "prod"
+region ht
+batch true
+
+use model "ayiti.alert"
+
+run model ayiti.alert {
+  input "siklon ak deplasman nan Ayiti"
+  retry 1
+}
+
+print result

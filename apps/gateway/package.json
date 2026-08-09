@@ -1,0 +1,19 @@
+{
+  "name": "@frc/gateway",
+  "version": "7.1.0",
+  "type": "module",
+  "main": "src/server.js",
+  "exports": { ".": "./src/server.js", "./app": "./src/app.js" },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "@frc/core": "7.1.0",
+    "@frc/engine": "7.1.0",
+    "@frc/frcl": "7.1.0",
+    "@ayiti/gov": "7.1.0",
+    "express": "^4.21.2"
+  },
+  "license": "MIT"
+}

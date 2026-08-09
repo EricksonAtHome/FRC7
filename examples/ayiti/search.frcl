@@ -1,0 +1,11 @@
+set env "prod"
+region ht
+lang ht
+
+use model "ayiti.search"
+
+run model ayiti.search {
+  input "BRH inflation note Haiti"
+}
+
+print result

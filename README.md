@@ -1,108 +1,139 @@
-# 🚀 FRC (Fast Response Connection) Ecosystem
+# FRC7 — Fast Response Connection
 
+[![CI](https://github.com/EricksonAtHome/FRC7/actions/workflows/ci.yml/badge.svg)](https://github.com/EricksonAtHome/FRC7/actions/workflows/ci.yml)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/d6402a4e-7305-4f49-bd1c-c41798ee15da/deploy-status)](https://app.netlify.com/projects/frc7/deploys)
 
-Welcome to the **Fast Response Connection (FRC)** ecosystem. FRC is a next-generation distributed AI execution platform and scripting language.
+**FRC7** is a distributed AI execution platform with a declarative language (**FRCL**), a production gateway, and **Ayiti OS (GoV)** — Haitian government models wired to real public APIs.
 
-What started as a simple declarative language (`.frcl`) has evolved through 9 levels of complexity into a full-scale, cloud-native, distributed AI network capable of executing models securely across global regional nodes.
+![FRC](https://raw.githubusercontent.com/EricksonAtHome/FRC7/refs/heads/main/img/1n8jky1n8jky1n8j.png)
 
-This repository serves as the **master monorepo** for the entire FRC project. It contains every layer of the architecture: from the lightweight language parser to the production Kubernetes cluster setup.
+## What's new in 7.1
 
-![FRC Image](https://raw.githubusercontent.com/EricksonAtHome/FRC7/refs/heads/main/img/1n8jky1n8jky1n8j.png)
+- **Ayiti OS GoV models only by default** (`ayiti.search`, `ayiti.stats`, `ayiti.dgi`, …)
+- **Live HaitiDocs MCP + JSON APIs** (search, indicators, documents)
+- **Ministry portals** — MEF, DGI, BRH, OMRH, CNMP (+ AyitiStats)
+- **New APIs**: `/v1/batch`, `/v1/lint`, `/v1/metrics`, `/v1/worker/tick`, webhooks
+- **New models**: `ayiti.translate`, `ayiti.alert`, citizen triage, UXP envelopes
+- **FRCL upgrades**: `lang`, `webhook`, `retry`, `batch`, comments, URL idents
+- **Control panel** UI for Ayiti OS
+- **Tests + CI** on Node 20/22
 
-## 🧠 What is FRC?
-
-At its core, **FRC** solves the problem of decentralized AI execution. Instead of building monolithic AI apps, FRC allows developers to write simple, declarative scripts (using the **FRCL** language) that instruct a network to:
-
-1. Parse the intent.
-2. Route the task to the nearest global node (EU, US, ASIA).
-3. Queue the task asynchronously using Redis.
-4. Execute the AI model and stream the result back to the client.
-
-## 📂 Directory Breakdown & Capabilities
-
-Here is a thorough explanation of every component folder in this repository, why it exists, and how to use it.
-
-### 1. `frcl-extension/` (Developer Tooling)
-
-- **What it is:** A Visual Studio Code extension.
-- **Why it exists:** FRC has its own language syntax (`.frcl`). To make the developer experience seamless, this extension provides native syntax highlighting, intelligent auto-completion, and colorization for `.frcl` files inside VS Code.
-- **What you can do:** Compile it using `vsce package` and install the `.vsix` file into your IDE to get proper FRC code styling.
-
-### 2. `dev-installer/` (The AI Project Brain)
-
-- **What it is:** A Python-based orchestration and scaffolding tool.
-- **Why it exists:** This represents "Level 4" of the system—an autonomous project generator. Instead of manually setting up Next.js or Docker projects, you describe what you want in FRCL, and this Python engine scaffolds the entire project.
-- **What you can do:** Run `python installer.py` to auto-generate full-stack applications.
-
-### 3. `frc-node/` (The Autonomous Meta-System)
-
-- **What it is:** A theoretical Python implementation of the advanced concepts (Levels 5 through 9).
-- **Why it exists:** It explores how FRC functions as a "living" system without a UI. It includes logic for `Self-Adaptive Nodes` (auto-healing), `Global Routing` (zero-trust security), and `Self-Rewriting` architectures where the system writes its own deployment code based on server stress.
-- **What you can do:** Explore files like `self_evolving_node.py` to study autonomous system architectures and self-scaling mathematical models.
-
-### 4. `frc-runtime/` & `frc-real/` (The Core Engine Basics)
-
-- **What it is:** The earliest, foundational JavaScript implementations of the FRC execution engine.
-- **Why it exists:** To bridge the gap between the `.frcl` script and the actual machine execution. It contains the raw string parsers that extract instructions like `use model models5` and turn them into JSON payloads.
-- **What you can do:** Run the CLI (`node cli/frc.js`) to parse raw text files locally.
-
-### 5. `frc-v1/` & `frc-v2/` (The Production Backends)
-
-- **What it is:** Grounded, production-ready backend architectures using Node.js, Express, and Redis.
-- **Why it exists:** This translates the theoretical routing into real software engineering.
-  - **`v1`** is a simple monolithic API and worker.
-  - **`v2`** is the **Production System**. It introduces `x-api-key` authentication, an Express API Gateway, and a Redis Job Queue. The gateway pushes tasks to Redis, and multi-node Docker workers pull jobs off the queue asynchronously.
-- **What you can do:** `cd frc-v2` and run `docker-compose up` to launch a fully distributed job queue and worker cluster on your local machine.
-
-### 6. `frc-cluster/` (The Multi-Region Blueprint)
-
-- **What it is:** A simulated global compute network using Docker Compose.
-- **Why it exists:** It proves that FRC can scale globally. It launches an API Gateway alongside three independent regional nodes (`node-eu`, `node-us`, `node-asia`).
-- **What you can do:** Send a request to the Gateway with a header `x-country: US`, and watch the Gateway intelligently proxy the request specifically to the US Node container.
-
-### 7. `frc-k8s/` (The Enterprise Cloud Architecture)
-
-- **What it is:** A comprehensive suite of Kubernetes configuration manifests (`.yaml`).
-- **Why it exists:** To transition FRC from "local Docker" to a real Cloud-Native platform (like AWS EKS or Google GKE). It includes Deployments, Services, an Ingress router, and Horizontal Pod Autoscalers (HPA).
-- **What you can do:** Apply this directly to a Kubernetes cluster (`kubectl apply -f k8s/`) to spin up auto-scaling regional nodes that react to real-time CPU utilization.
-
-### 8. `frc-netlify-live/` & `frc-control-panel/` (The Serverless Edge)
-
-- **What it is:** The Global Control Panel built on Netlify Serverless Edge Functions.
-- **Why it exists:** Because running the heavy AI compute directly on the frontend is inefficient. The Netlify app serves purely as a **Smart Router and UI**. It uses Netlify's native IP/Geo-headers (`x-nf-country`) to instantly detect where the user is located, and forwards the payload to the nearest external `frc.systems` cluster.
-- **What you can do:** Push this to Netlify to instantly deploy a globally distributed Edge Router with zero server maintenance.
-
-### 9. `arduino_example/` (The Hardware IoT Client)
-
-- **What it is:** C++ hardware logic for microcontrollers like the ESP32 and Arduino boards.
-- **Why FRC makes IoT better:** Traditional hardware requires complex backend logic, heavy MQTT brokers, or tight coupling to a specific cloud provider to process AI logic. FRC abstracts all of this. An Arduino board simply makes a lightweight HTTP `POST` request containing FRCL instructions, and the FRC cloud network instantly parses it, routes it globally, executes the AI model, and returns a clean JSON response.
-- **How developers can use it for testing:** Developers can flash `arduino_example.ino` onto an ESP32, connect it to WiFi, and immediately see live responses from `frc.systems` in their Serial Monitor. This provides a zero-friction playground to test latency and AI model outputs on real physical devices.
-- **Using it in your own apps:** You can directly embed this HTTP architecture into smart home sensors, robotics, or industrial monitoring tools. For example, a temperature sensor could send raw data to an FRC node, where an AI model analyzes it and returns an instruction (e.g., "turn_on_cooling") directly to the microcontroller.
-
-## 🛠️ Usage (Singularity CLI)
-
-The FRC CLI interfaces with the self-modifying ecosystem.
+## Quick start
 
 ```bash
-# Execute model globally
-frc run models5
-
-# Trigger Level 9 Singularity Loop (Self-Rewriting Ecosystem)
-frc singularity
-
-# View dynamic ecosystem map
-frc nodes
+npm install
+npm test
+npm run demo                 # ayiti.translate local demo
+npm run demo:ayiti           # live HaitiDocs search
+npm run start:gateway        # http://127.0.0.1:3000
+npm start -w @frc/control-panel   # http://127.0.0.1:8787
 ```
 
-## 🛠️ The FRC Execution Flow
+```bash
+# CLI
+npx frc models
+npx frc exec ayiti.citizen "Mwen bezwen NIF nan DGI"
+npx frc lint demo.frcl
+npx frc health
+npx frc run examples/ayiti/search.frcl
+```
 
-No matter which folder you are looking at, the systemic logic of FRC remains uniform:
+## Architecture
 
-1. **Client Request**: A developer, dashboard, or hardware device sends FRCL script instructions.
-2. **Global Router (Netlify / Ingress)**: Evaluates user location and traffic.
-3. **API Gateway (Express)**: Authenticates API keys and secures the payload.
-4. **Broker (Redis)**: Buffers the tasks to prevent system crashes during high traffic.
-5. **Execution Nodes (Docker / K8s)**: Asynchronously grabs the job, runs the AI model, and returns the result.
+```
+Client / CLI / Control Panel / Arduino
+              │
+              ▼
+     FRC7 Gateway  — auth · lint · batch · geo-route (HT default)
+              │
+     Redis queue + job results + webhooks
+              │
+              ▼
+     @frc/engine  →  Ayiti OS GoV models
+              │
+              ▼
+ HaitiDocs MCP/JSON · AyitiStats · .gouv.ht portals
+```
 
-This repository is the complete blueprint for an enterprise-scale AI operating system.
+## Ayiti OS (GoV) models
+
+| Model | Purpose |
+|---|---|
+| `ayiti.search` | HaitiDocs knowledge search |
+| `ayiti.stats` | Indicator catalog / SDMX series |
+| `ayiti.docs` | Official document lookup |
+| `ayiti.mef` / `ayiti.dgi` / `ayiti.brh` / `ayiti.omrh` / `ayiti.cnmp` | Ministry desks |
+| `ayiti.citizen` | Intent triage → ministry model |
+| `ayiti.translate` | Kreyòl / FR / EN civic glossary assist |
+| `ayiti.alert` | Public alert brief from open sources |
+| `ayiti.uxp` | Inter-agency exchange envelope |
+
+Generic models like `models5` are **rejected** unless `FRC_ALLOW_BUILTIN=1` (demo only: `echo`, `summarizer`, `coder`).
+
+## HTTP API
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/health` | Liveness + Ayiti probe summary |
+| `GET` | `/v1/models` | Allowed GoV models |
+| `GET` | `/v1/metrics` | Queue counters |
+| `POST` | `/v1/run/:model` | Sync/async model run |
+| `POST` | `/v1/execute` | Full FRCL script |
+| `POST` | `/v1/batch` | Up to 20 jobs |
+| `POST` | `/v1/lint` | FRCL validation |
+| `GET` | `/v1/jobs/:id` | Job status/result |
+| `POST` | `/v1/worker/tick` | Process one queued job |
+
+Auth: `x-api-key: ayiti_gov_test_key` (dev).
+
+```bash
+curl -s localhost:3000/v1/run/ayiti.search \
+  -H 'content-type: application/json' \
+  -H 'x-api-key: ayiti_gov_test_key' \
+  -d '{"input":"BRH inflation","sync":true,"region":"ht"}'
+```
+
+## FRCL example
+
+```frcl
+set env "prod"
+region ht
+lang ht
+
+use model "ayiti.citizen"
+
+run model ayiti.citizen {
+  input "Mwen bezwen NIF nan DGI"
+  retry 1
+}
+
+print result
+```
+
+## Monorepo layout
+
+| Path | Role |
+|---|---|
+| `packages/frcl` | Language tokenizer / parser / lint |
+| `packages/engine` | Execution + model policy |
+| `packages/core` | Auth, regions, Redis/memory queue, webhooks, metrics |
+| `packages/ayiti-gov` | Government models + Haiti API clients |
+| `packages/sdk` | JS client |
+| `apps/gateway` | Production API |
+| `apps/cli` | `frc` CLI |
+| `apps/control-panel` | Browser UI |
+| `examples/` | Sample `.frcl` scripts |
+| `frc-v1` … `frc-k8s` | Legacy infra packages (reference) |
+
+## Configuration
+
+Copy `.env.example` → `.env`:
+
+- `AYITI_API_KEY` / `FRC_API_KEYS`
+- `REDIS_URL` (optional — memory fallback)
+- `AYITI_HAITIDOCS_MCP` / portal URL overrides
+- `FRC_ALLOW_BUILTIN=1` for local non-gov demos
+
+## License
+
+MIT

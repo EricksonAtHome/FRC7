@@ -1,0 +1,10 @@
+set env "prod"
+region ht
+
+use model "ayiti.citizen"
+
+run model ayiti.citizen {
+  input "Mwen bezwen enfòmasyon sou NIF nan DGI"
+}
+
+print result

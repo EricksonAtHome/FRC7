@@ -1,0 +1,10 @@
+{
+  "name": "@frc/engine",
+  "version": "7.1.0",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": { ".": "./src/index.js" },
+  "scripts": { "test": "node --test test/*.test.js" },
+  "dependencies": { "@frc/frcl": "7.1.0", "@ayiti/gov": "7.1.0" },
+  "license": "MIT"
+}

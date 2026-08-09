@@ -1,0 +1,8 @@
+{
+  "name": "@frc/control-panel",
+  "version": "7.1.0",
+  "type": "module",
+  "scripts": { "start": "node server.js", "test": "node --test test/*.test.js" },
+  "dependencies": { "@frc/gateway": "7.1.0" },
+  "license": "MIT"
+}

@@ -1,29 +1,26 @@
-import { getJob } from "../queue/queue.js";
+import { dequeueJob, completeJob, failJob, useMemoryQueue } from "../../packages/core/src/index.js";
+import { executeJob } from "../../packages/engine/src/index.js";
 
-function executeModel(model, input) {
-  return {
-    output: `[FRC v2] ${model} processed: ${input}`,
-    latency: "8ms"
-  };
-}
+if (process.env.REDIS_URL == null) useMemoryQueue();
 
 async function loop() {
-  console.log("⚙️ Worker node started. Waiting for jobs...");
+  console.log("FRC7 worker — Ayiti OS GoV models");
   while (true) {
     try {
-        const job = await getJob();
-
-        if (job) {
-          console.log(`\n📦 Processing job: ${job.id}`);
-          const result = executeModel(job.model, job.input);
-          console.log(`✅ Result:`, result);
-        } else {
-            // Wait before checking again if queue is empty
-            await new Promise(resolve => setTimeout(resolve, 1000));
-        }
-    } catch (error) {
-        console.error("Worker error:", error.message);
-        await new Promise(resolve => setTimeout(resolve, 2000));
+      const job = await dequeueJob({ timeoutSec: 1 });
+      if (!job) { await new Promise((r) => setTimeout(r, 200)); continue; }
+      console.log(`→ ${job.id} ${job.model}`);
+      try {
+        const result = await executeJob({ model: job.model, input: job.input, meta: job.meta });
+        await completeJob(job.id, result);
+        console.log(`✓ ${job.id}`);
+      } catch (err) {
+        await failJob(job.id, err);
+        console.error(`✗ ${job.id}: ${err.message}`);
+      }
+    } catch (err) {
+      console.error(err.message);
+      await new Promise((r) => setTimeout(r, 1000));
     }
   }
 }

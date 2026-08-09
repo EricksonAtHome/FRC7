@@ -1,0 +1,9 @@
+{
+  "name": "@frc/sdk",
+  "version": "7.1.0",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": { ".": "./src/index.js" },
+  "scripts": { "test": "node --test test/*.test.js" },
+  "license": "MIT"
+}

@@ -1,29 +1,17 @@
-import express from "express";
-import { authMiddleware } from "./auth.js";
-import { addJob } from "../queue/queue.js";
+/**
+ * Legacy FRC v2 entry — delegates to FRC7 gateway app when available.
+ * Prefer: npm run start:gateway
+ */
+import { pathToFileURL } from "node:url";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const app = express();
-app.use(express.json());
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const { createApp } = await import(
+  pathToFileURL(resolve(__dirname, "../../apps/gateway/src/app.js")).href
+);
 
-// AUTH PROTECTED
-app.post("/run/:model", authMiddleware, async (req, res) => {
-  try {
-    const job = await addJob({
-      model: req.params.model,
-      input: req.body.input,
-      apiKey: req.apiKey
-    });
-
-    res.json({
-      status: "queued",
-      jobId: job.id
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to queue job" });
-  }
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🌐 FRC v2 API Gateway running on port ${PORT}`);
+const PORT = Number(process.env.PORT || 3000);
+createApp().listen(PORT, () => {
+  console.log(`FRC7 gateway (via frc-v2 shim) on :${PORT}`);
 });

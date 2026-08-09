@@ -1,0 +1,12 @@
+# Local demo — requires FRC_ALLOW_BUILTIN=1 OR use an ayiti.* model
+set env "dev"
+region ht
+
+use model "ayiti.translate"
+
+run model ayiti.translate {
+  input "citizen tax budget inflation government"
+  lang ht
+}
+
+print result

@@ -1,25 +1,16 @@
 set env "prod"
+region ht
+lang ht
 
-network frc.systems {
+network ayiti.gouv {
   mode "secure"
-  protocol "frc"
+  protocol "ayiti-os-gov"
 }
 
-network mobile {
-  type "5g"
-  provider "auto"
-  priority "low-latency"
-}
+use model "ayiti.stats"
 
-docker "frc-runtime" {
-  image "node:20"
-  run "node ai.js"
-}
-
-use model "models5"
-
-run model models5 {
-  input "Explain FRC systems orchestration with 5G and Docker"
+run model ayiti.stats {
+  input "displacement"
 }
 
 print result

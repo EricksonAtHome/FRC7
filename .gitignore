@@ -4,5 +4,12 @@ node_modules/
 dist/
 build/
 .env
+.env.local
 .netlify/
 .gemini/
+coverage/
+*.vsix
+.turbo/
+.cache/
+tmp/
+*.tgz

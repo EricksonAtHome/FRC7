@@ -1,0 +1,17 @@
+{
+  "name": "@frc/cli",
+  "version": "7.1.0",
+  "type": "module",
+  "bin": { "frc": "src/index.js" },
+  "scripts": {
+    "frc": "node src/index.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "@frc/frcl": "7.1.0",
+    "@frc/engine": "7.1.0",
+    "@frc/core": "7.1.0",
+    "@ayiti/gov": "7.1.0"
+  },
+  "license": "MIT"
+}

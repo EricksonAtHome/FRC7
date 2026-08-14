@@ -89,7 +89,8 @@ function chatReply(ctx) {
   const q = ctx.lastUser.trim();
   if (!q) return `${preamble(ctx)}\n\nHi — I'm Neuriy Chat. Ask me anything.`;
 
-  if (/^(hi|hello|hey|bonjour|salut|alo)\b/i.test(q)) {
+  // Short greetings only — longer prompts that start with "Hello…" should still get a real answer
+  if (/^(hi|hello|hey|bonjour|salut|alo)\b[.!?\s]*$/i.test(q.trim())) {
     return `${preamble(ctx)}\n\nHello! I'm Neuriy AI — a ChatGPT-style conversational assistant in FRC7. How can I help?`;
   }
 

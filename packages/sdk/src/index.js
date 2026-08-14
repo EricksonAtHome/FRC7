@@ -46,6 +46,53 @@ export class FRCClient {
   wait(id, { timeoutMs = 30000 } = {}) {
     return this.#req(`/v1/jobs/${encodeURIComponent(id)}/wait?timeoutMs=${timeoutMs}`);
   }
+
+  /** Neuriy ChatGPT-style chat */
+  chat(message, opts = {}) {
+    const body = typeof message === "object" && message !== null
+      ? message
+      : {
+          message,
+          model: opts.model || "neuriy.chat",
+          sessionId: opts.sessionId,
+          system: opts.system,
+          tools: opts.tools,
+          messages: opts.messages,
+        };
+    return this.#req("/v1/chat", { method: "POST", body });
+  }
+
+  /** OpenAI-compatible chat completions */
+  chatCompletions(body = {}) {
+    return this.#req("/v1/chat/completions", {
+      method: "POST",
+      body: {
+        model: body.model || "neuriy.chat",
+        messages: body.messages || [],
+        ...body,
+      },
+    });
+  }
+
+  createSession(opts = {}) {
+    return this.#req("/v1/neuriy/sessions", { method: "POST", body: opts });
+  }
+
+  listSessions() {
+    return this.#req("/v1/neuriy/sessions");
+  }
+
+  marketplace({ q, category } = {}) {
+    const qs = new URLSearchParams();
+    if (q) qs.set("q", q);
+    if (category) qs.set("category", category);
+    const suffix = qs.toString() ? `?${qs}` : "";
+    return this.#req(`/v1/neuriy/marketplace${suffix}`);
+  }
+
+  tick() {
+    return this.#req("/v1/worker/tick", { method: "POST", body: {} });
+  }
 }
 
 export default FRCClient;

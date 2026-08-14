@@ -5,7 +5,17 @@
 
 **FRC7** is a distributed AI execution platform with a declarative language (**FRCL**), a production gateway, **Ayiti OS (GoV)** Haitian government models, and **Neuriy AI** ChatGPT-style conversational models.
 
-![FRC](https://raw.githubusercontent.com/EricksonAtHome/FRC7/refs/heads/main/img/1n8jky1n8jky1n8j.png)
+![FRC7 Control Panel](img/frc7-control-panel.png)
+
+### Demo video
+
+[![Neuriy AI demo](img/frc7-neuriy-home.png)](img/frc7-neuriy-screencast-lite.mp4)
+
+Watch the UI walkthrough: [`img/frc7-neuriy-screencast-lite.mp4`](img/frc7-neuriy-screencast-lite.mp4) · slideshow [`img/frc7-neuriy-demo.mp4`](img/frc7-neuriy-demo.mp4)
+
+| Control panel | Neuriy chat | Neuriy code | Models API |
+|---|---|---|---|
+| ![home](img/frc7-control-panel.png) | ![chat](img/frc7-neuriy-chat.png) | ![code](img/frc7-neuriy-code.png) | ![models](img/frc7-neuriy-models.png) |
 
 ## What's new in 7.2
 
@@ -115,11 +125,38 @@ Generic models like `models5` are **rejected** unless `FRC_ALLOW_BUILTIN=1` (dem
 Auth: `x-api-key: ayiti_gov_test_key` (dev).
 
 ```bash
+curl -s localhost:3000/v1/chat \
+  -H 'content-type: application/json' \
+  -H 'x-api-key: ayiti_gov_test_key' \
+  -d '{"model":"neuriy.chat","message":"Explain what an LLM is"}'
+```
+
+```bash
 curl -s localhost:3000/v1/run/ayiti.search \
   -H 'content-type: application/json' \
   -H 'x-api-key: ayiti_gov_test_key' \
   -d '{"input":"BRH inflation","sync":true,"region":"ht"}'
 ```
+
+## SDK (`@frc/sdk`)
+
+```js
+import { FRCClient } from "@frc/sdk";
+
+const frc = new FRCClient({ baseUrl: "http://127.0.0.1:3000", apiKey: "ayiti_gov_test_key" });
+
+await frc.health();
+await frc.models();
+await frc.chat("Hello Neuriy", { model: "neuriy.chat" });
+await frc.chatCompletions({
+  model: "neuriy.code",
+  messages: [{ role: "user", content: "Write hello world" }],
+});
+await frc.run("ayiti.translate", "citizen tax", { sync: true, region: "ht" });
+await frc.marketplace({ q: "assistant" });
+```
+
+Live SDK tests cover health, Neuriy chat, completions, marketplace, and Ayiti runs (`npm test -w @frc/sdk`).
 
 ## FRCL example
 
@@ -143,14 +180,17 @@ print result
 | Path | Role |
 |---|---|
 | `packages/frcl` | Language tokenizer / parser / lint |
-| `packages/engine` | Execution + model policy |
+| `packages/engine` | Execution + model policy (Neuriy + Ayiti) |
 | `packages/core` | Auth, regions, Redis/memory queue, webhooks, metrics |
 | `packages/ayiti-gov` | Government models + Haiti API clients |
-| `packages/sdk` | JS client |
+| `packages/neuriy` | Neuriy AI chat, tools, RAG, marketplace bridge |
+| `packages/sdk` | JS client (`chat`, `run`, `marketplace`, …) |
 | `apps/gateway` | Production API |
 | `apps/cli` | `frc` CLI |
 | `apps/control-panel` | Browser UI |
 | `examples/` | Sample `.frcl` scripts |
+| `img/` | Screenshots + demo videos |
+| `docs/chatgpt-systems.md` | GPT / ChatGPT technical guide |
 | `frc-v1` … `frc-k8s` | Legacy infra packages (reference) |
 
 ## Configuration
@@ -161,6 +201,8 @@ Copy `.env.example` → `.env`:
 - `REDIS_URL` (optional — memory fallback)
 - `AYITI_HAITIDOCS_MCP` / portal URL overrides
 - `FRC_ALLOW_BUILTIN=1` for local non-gov demos
+- `NEURIY_LLM_BASE_URL` + `NEURIY_LLM_API_KEY` for remote OpenAI-compatible generation
+- `NEURIY_MARKETPLACE_URL` for live Neuriy Marketplace search
 
 ## License
 

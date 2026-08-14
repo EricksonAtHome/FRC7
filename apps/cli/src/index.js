@@ -4,21 +4,23 @@ import { resolve } from "node:path";
 import { lint, analyze } from "@frc/frcl";
 import { executeFrcl, executeJob, listModels } from "@frc/engine";
 import { describeRoute, generateApiKey, getMetrics, DEMO_KEY } from "@frc/core";
-import { healthcheck } from "@ayiti/gov";
+import { healthcheck as ayitiHealth } from "@ayiti/gov";
+import { healthcheck as neuriyHealth, chat } from "@neuriy/ai";
 
-const VERSION = "7.1.0";
+const VERSION = "7.2.0";
 
 const HELP = `
-FRC7 CLI v${VERSION} — Fast Response Connection + Ayiti OS (GoV)
+FRC7 CLI v${VERSION} — Fast Response Connection + Ayiti OS + Neuriy AI
 
 Commands:
   run <file.frcl>           Execute FRCL locally
-  exec <model> <input…>     Run one model
+  exec <model> <input…>     Run one model (Neuriy or Ayiti)
+  chat [model] <message…>   Neuriy conversational chat
   lint <file.frcl>          Validate FRCL
   parse <file.frcl>         Show AST/plan
-  models                    List Ayiti OS models
+  models                    List Neuriy + Ayiti models
   route [--country XX]      Geo route preview
-  health                    Probe Ayiti government APIs
+  health                    Probe Ayiti + Neuriy
   metrics                   Local process metrics snapshot
   keygen [--ayiti]          Generate API key
   call <file.frcl>          Execute against FRC_URL gateway
@@ -44,6 +46,19 @@ async function main(argv) {
       console.log(result.output);
       break;
     }
+    case "chat": {
+      let model = "neuriy.chat";
+      let parts = rest;
+      if (rest[0]?.startsWith("neuriy.")) {
+        model = rest[0];
+        parts = rest.slice(1);
+      }
+      const message = parts.join(" ") || "Hello";
+      const result = await chat({ model, message });
+      console.log(result.output);
+      if (result.sessionId) console.error(`# session ${result.sessionId}`);
+      break;
+    }
     case "lint": {
       const result = lint(read(rest[0]));
       console.log(JSON.stringify(result, null, 2));
@@ -62,7 +77,10 @@ async function main(argv) {
       break;
     }
     case "health":
-      console.log(JSON.stringify(await healthcheck(), null, 2));
+      console.log(JSON.stringify({
+        ayiti: await ayitiHealth(),
+        neuriy: await neuriyHealth(),
+      }, null, 2));
       break;
     case "metrics":
       console.log(JSON.stringify(getMetrics(), null, 2));

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>FRC7 · Ayiti OS GoV</title>
+  <title>FRC7 · Ayiti OS + Neuriy AI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
@@ -12,14 +12,15 @@
   <div class="atmosphere" aria-hidden="true"></div>
   <header class="top">
     <div class="brand"><span class="mark"></span><span class="name">FRC7</span></div>
-    <p class="tag">Ayiti OS · GoV</p>
+    <p class="tag">Ayiti OS · GoV · Neuriy AI</p>
   </header>
   <main>
     <section class="hero">
-      <h1>Gouvènman AI pou Ayiti</h1>
-      <p class="lede">Run Ayiti OS models against HaitiDocs, AyitiStats, and .gouv.ht portals.</p>
+      <h1>FRC7</h1>
+      <p class="lede">Ayiti government models and Neuriy ChatGPT-style conversation in one gateway.</p>
       <div class="actions">
         <button type="button" id="runBtn" class="primary">Execute</button>
+        <button type="button" id="chatBtn" class="primary">Neuriy Chat</button>
         <button type="button" id="lintBtn" class="ghost">Lint FRCL</button>
         <button type="button" id="modelsBtn" class="ghost">Models</button>
       </div>
@@ -29,14 +30,26 @@
       <label class="field"><span>Model shortcut</span>
         <select id="model">
           <option value="">(use FRCL)</option>
-          <option>ayiti.search</option>
-          <option>ayiti.stats</option>
-          <option>ayiti.citizen</option>
-          <option>ayiti.brh</option>
-          <option>ayiti.dgi</option>
-          <option>ayiti.mef</option>
-          <option>ayiti.alert</option>
-          <option>ayiti.translate</option>
+          <optgroup label="Neuriy AI">
+            <option selected>neuriy.chat</option>
+            <option>neuriy.assistant</option>
+            <option>neuriy.reason</option>
+            <option>neuriy.code</option>
+            <option>neuriy.creative</option>
+            <option>neuriy.tutor</option>
+            <option>neuriy.translate</option>
+            <option>neuriy.marketplace</option>
+          </optgroup>
+          <optgroup label="Ayiti OS GoV">
+            <option>ayiti.search</option>
+            <option>ayiti.stats</option>
+            <option>ayiti.citizen</option>
+            <option>ayiti.brh</option>
+            <option>ayiti.dgi</option>
+            <option>ayiti.mef</option>
+            <option>ayiti.alert</option>
+            <option>ayiti.translate</option>
+          </optgroup>
         </select>
       </label>
       <label class="field grow"><span>FRCL / input</span>

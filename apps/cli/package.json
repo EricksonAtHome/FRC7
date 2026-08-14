@@ -11,7 +11,8 @@
     "@frc/frcl": "7.1.0",
     "@frc/engine": "7.1.0",
     "@frc/core": "7.1.0",
-    "@ayiti/gov": "7.1.0"
+    "@ayiti/gov": "7.1.0",
+    "@neuriy/ai": "7.2.0"
   },
   "license": "MIT"
 }

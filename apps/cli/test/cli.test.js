@@ -9,13 +9,20 @@ const run = (...args) => spawnSync(process.execPath, [cli, ...args], { encoding:
 
 describe("cli", () => {
   it("version + models", () => {
-    assert.match(run("version").stdout, /7\.1\.0/);
+    assert.match(run("version").stdout, /7\.2\.0/);
     assert.match(run("models").stdout, /ayiti\.search/);
+    assert.match(run("models").stdout, /neuriy\.chat/);
   });
 
   it("exec translate", () => {
     const out = run("exec", "ayiti.translate", "citizen", "tax");
     assert.equal(out.status, 0, out.stderr);
     assert.match(out.stdout, /glossary|term|citizen/i);
+  });
+
+  it("chat neuriy", () => {
+    const out = run("chat", "neuriy.chat", "Hello");
+    assert.equal(out.status, 0, out.stderr);
+    assert.match(out.stdout, /Neuriy/i);
   });
 });

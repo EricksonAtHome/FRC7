@@ -3,20 +3,26 @@
 [![CI](https://github.com/EricksonAtHome/FRC7/actions/workflows/ci.yml/badge.svg)](https://github.com/EricksonAtHome/FRC7/actions/workflows/ci.yml)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/d6402a4e-7305-4f49-bd1c-c41798ee15da/deploy-status)](https://app.netlify.com/projects/frc7/deploys)
 
-**FRC7** is a distributed AI execution platform with a declarative language (**FRCL**), a production gateway, and **Ayiti OS (GoV)** — Haitian government models wired to real public APIs.
+**FRC7** is a distributed AI execution platform with a declarative language (**FRCL**), a production gateway, **Ayiti OS (GoV)** Haitian government models, and **Neuriy AI** ChatGPT-style conversational models.
 
 ![FRC](https://raw.githubusercontent.com/EricksonAtHome/FRC7/refs/heads/main/img/1n8jky1n8jky1n8j.png)
 
-## What's new in 7.1
+## What's new in 7.2
 
-- **Ayiti OS GoV models only by default** (`ayiti.search`, `ayiti.stats`, `ayiti.dgi`, …)
+- **Neuriy AI chat models** — `neuriy.chat`, `neuriy.assistant`, `neuriy.reason`, `neuriy.code`, `neuriy.creative`, `neuriy.tutor`, `neuriy.translate`, `neuriy.marketplace`
+- **Chat APIs** — `/v1/chat`, `/v1/chat/completions` (OpenAI-compatible shape), sessions, marketplace search
+- **Tools + RAG + safety** orchestration (local engine; optional remote LLM via `NEURIY_LLM_*`)
+- **Docs** — [NEURIY_AI.md](NEURIY_AI.md), [docs/chatgpt-systems.md](docs/chatgpt-systems.md) (full GPT/ChatGPT technical guide)
+- Marketplace bridge to [Neuriy Marketplace](https://github.com/neuriy/Neuriy-Marketplace)
+
+## What's in 7.1
+
+- **Ayiti OS GoV models** (`ayiti.search`, `ayiti.stats`, `ayiti.dgi`, …)
 - **Live HaitiDocs MCP + JSON APIs** (search, indicators, documents)
 - **Ministry portals** — MEF, DGI, BRH, OMRH, CNMP (+ AyitiStats)
-- **New APIs**: `/v1/batch`, `/v1/lint`, `/v1/metrics`, `/v1/worker/tick`, webhooks
-- **New models**: `ayiti.translate`, `ayiti.alert`, citizen triage, UXP envelopes
+- **APIs**: `/v1/batch`, `/v1/lint`, `/v1/metrics`, `/v1/worker/tick`, webhooks
 - **FRCL upgrades**: `lang`, `webhook`, `retry`, `batch`, comments, URL idents
-- **Control panel** UI for Ayiti OS
-- **Tests + CI** on Node 20/22
+- **Control panel** UI · **Tests + CI** on Node 20/22
 
 ## Quick start
 
@@ -25,6 +31,7 @@ npm install
 npm test
 npm run demo                 # ayiti.translate local demo
 npm run demo:ayiti           # live HaitiDocs search
+npm run demo:neuriy          # Neuriy chat demo
 npm run start:gateway        # http://127.0.0.1:3000
 npm start -w @frc/control-panel   # http://127.0.0.1:8787
 ```
@@ -32,9 +39,12 @@ npm start -w @frc/control-panel   # http://127.0.0.1:8787
 ```bash
 # CLI
 npx frc models
+npx frc chat "Hello Neuriy"
+npx frc chat neuriy.code "Write a hello world"
 npx frc exec ayiti.citizen "Mwen bezwen NIF nan DGI"
 npx frc lint demo.frcl
 npx frc health
+npx frc run examples/neuriy/chat.frcl
 npx frc run examples/ayiti/search.frcl
 ```
 
@@ -44,16 +54,30 @@ npx frc run examples/ayiti/search.frcl
 Client / CLI / Control Panel / Arduino
               │
               ▼
-     FRC7 Gateway  — auth · lint · batch · geo-route (HT default)
+     FRC7 Gateway  — auth · chat · lint · batch · geo-route
               │
      Redis queue + job results + webhooks
               │
-              ▼
-     @frc/engine  →  Ayiti OS GoV models
-              │
-              ▼
- HaitiDocs MCP/JSON · AyitiStats · .gouv.ht portals
+       ┌──────┴──────┐
+       ▼             ▼
+  Neuriy AI      Ayiti OS GoV
+  (chat/tools)   (HaitiDocs / portals)
 ```
+
+## Neuriy AI models
+
+| Model | Purpose |
+|---|---|
+| `neuriy.chat` | General ChatGPT-style conversation |
+| `neuriy.assistant` | Task helper with tools |
+| `neuriy.reason` | Step-by-step reasoning style |
+| `neuriy.code` | Pair programming |
+| `neuriy.creative` | Writing / ideation |
+| `neuriy.tutor` | Teaching |
+| `neuriy.translate` | EN / FR / HT assist |
+| `neuriy.marketplace` | Search Neuriy Marketplace apps |
+
+See [NEURIY_AI.md](NEURIY_AI.md) and the deep dive [docs/chatgpt-systems.md](docs/chatgpt-systems.md).
 
 ## Ayiti OS (GoV) models
 
@@ -74,8 +98,12 @@ Generic models like `models5` are **rejected** unless `FRC_ALLOW_BUILTIN=1` (dem
 
 | Method | Path | Description |
 |---|---|---|
-| `GET` | `/health` | Liveness + Ayiti probe summary |
-| `GET` | `/v1/models` | Allowed GoV models |
+| `GET` | `/health` | Liveness + Ayiti + Neuriy |
+| `GET` | `/v1/models` | Neuriy + Ayiti models |
+| `POST` | `/v1/chat` | Neuriy conversational chat |
+| `POST` | `/v1/chat/completions` | OpenAI-compatible chat |
+| `POST` | `/v1/neuriy/sessions` | Create chat session |
+| `GET` | `/v1/neuriy/marketplace` | Marketplace search |
 | `GET` | `/v1/metrics` | Queue counters |
 | `POST` | `/v1/run/:model` | Sync/async model run |
 | `POST` | `/v1/execute` | Full FRCL script |

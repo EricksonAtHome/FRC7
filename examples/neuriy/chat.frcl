@@ -1,0 +1,10 @@
+set env "prod"
+region ht
+lang en
+use model "neuriy.chat"
+
+run model neuriy.chat {
+  input "Hello Neuriy — explain what an LLM is in one short paragraph."
+}
+
+print result

@@ -42,3 +42,12 @@ document.getElementById("modelsBtn").onclick = async () => {
   try { show(await call("/v1/models", undefined, "GET")); }
   catch (e) { show(`Error: ${e.message}`); }
 };
+
+document.getElementById("chatBtn").onclick = async () => {
+  show("Chatting…");
+  try {
+    const model = modelEl.value?.startsWith("neuriy.") ? modelEl.value : "neuriy.chat";
+    const data = await call("/v1/chat", { model, message: sourceEl.value, tools: true });
+    show(data.output || data);
+  } catch (e) { show(`Error: ${e.message}`); }
+};

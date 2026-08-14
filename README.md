@@ -5,17 +5,25 @@
 
 **FRC7** is a distributed AI execution platform with a declarative language (**FRCL**), a production gateway, **Ayiti OS (GoV)** Haitian government models, and **Neuriy AI** ChatGPT-style conversational models.
 
-![FRC7 Control Panel](img/frc7-control-panel.png)
+![FRC7 Control Panel](./img/frc7-control-panel.png)
 
-### Demo video
+### Screenshots & demo video
 
-[![Neuriy AI demo](img/frc7-neuriy-home.png)](img/frc7-neuriy-screencast-lite.mp4)
-
-Watch the UI walkthrough: [`img/frc7-neuriy-screencast-lite.mp4`](img/frc7-neuriy-screencast-lite.mp4) · slideshow [`img/frc7-neuriy-demo.mp4`](img/frc7-neuriy-demo.mp4)
+<p align="center">
+  <img src="./img/frc7-control-panel.png" alt="FRC7 control panel" width="820" />
+</p>
 
 | Control panel | Neuriy chat | Neuriy code | Models API |
 |---|---|---|---|
-| ![home](img/frc7-control-panel.png) | ![chat](img/frc7-neuriy-chat.png) | ![code](img/frc7-neuriy-code.png) | ![models](img/frc7-neuriy-models.png) |
+| <img src="./img/frc7-control-panel.png" alt="home" width="220" /> | <img src="./img/frc7-neuriy-chat.png" alt="chat" width="220" /> | <img src="./img/frc7-neuriy-code.png" alt="code" width="220" /> | <img src="./img/frc7-neuriy-models.png" alt="models" width="220" /> |
+
+- UI walkthrough video: [`img/frc7-neuriy-screencast-lite.mp4`](./img/frc7-neuriy-screencast-lite.mp4)
+- Slideshow: [`img/frc7-neuriy-demo.mp4`](./img/frc7-neuriy-demo.mp4)
+- GitHub Pages gallery: [`docs/index.html`](./docs/index.html)
+
+### Demo video
+
+[![Neuriy AI demo](./img/frc7-neuriy-home.png)](./img/frc7-neuriy-screencast-lite.mp4)
 
 ## What's new in 7.2
 

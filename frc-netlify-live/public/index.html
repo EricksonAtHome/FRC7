@@ -1,83 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>FRC Live Control System</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FRC7 Live · Neuriy AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
   <style>
+    :root { --ink:#101820; --muted:#3d5348; --accent:#0b6e4f; --line:rgba(16,24,32,.12); }
+    * { box-sizing: border-box; }
     body {
-      margin: 0;
-      font-family: Arial;
-      background: #ffffff;
-      display: flex;
-      height: 100vh;
+      margin: 0; font-family: "DM Sans", sans-serif; color: var(--ink);
+      background: linear-gradient(160deg, #d5e8dc, #eef4f0 50%, #f2ebe4); min-height: 100vh;
     }
-
-    .left {
-      width: 40%;
-      padding: 30px;
-      border-right: 1px solid #eee;
-    }
-
-    .right {
-      width: 60%;
-      padding: 30px;
-      background: #f9f9f9;
-    }
-
-    textarea {
-      width: 100%;
-      height: 300px;
-      font-size: 14px;
-    }
-
-    button {
-      margin-top: 10px;
-      padding: 10px;
-      cursor: pointer;
-    }
-
-    pre {
-      background: #111;
-      color: #0f0;
-      padding: 15px;
-      height: 400px;
-      overflow: auto;
-    }
+    main { width: min(1000px, calc(100% - 2rem)); margin: 0 auto 2rem; padding-top: 1.5rem; }
+    h1 { font-family: Syne, sans-serif; font-size: clamp(1.8rem,4vw,2.6rem); margin: 0 0 .5rem; }
+    p { color: var(--muted); max-width: 50ch; }
+    .grid { display: grid; gap: .85rem; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); margin-top: 1.25rem; }
+    img { width: 100%; border-radius: .45rem; border: 1px solid var(--line); background: #fff; }
+    a { color: var(--accent); font-weight: 600; }
   </style>
 </head>
-
 <body>
-
-<div class="left">
-  <h2>FRC Live System</h2>
-
-  <textarea id="code">
-use model models5
-input "hello frc network"
-  </textarea>
-
-  <button onclick="run()">RUN</button>
-</div>
-
-<div class="right">
-  <h3>OUTPUT</h3>
-  <pre id="out">waiting...</pre>
-</div>
-
-<script>
-async function run() {
-  const code = document.getElementById("code").value;
-
-  const res = await fetch("/.netlify/functions/route", {
-    method: "POST",
-    body: JSON.stringify({ code })
-  });
-
-  const data = await res.json();
-
-  document.getElementById("out").innerText =
-    JSON.stringify(data, null, 2);
-}
-</script>
-
+  <main>
+    <h1>FRC7 · Neuriy AI</h1>
+    <p>Updated demo gallery — ChatGPT-style Neuriy models + Ayiti OS GoV. Photos from the FRC7.2 control panel.</p>
+    <p><a href="https://github.com/EricksonAtHome/FRC7">Open GitHub repo</a> · <a href="https://ericksonathome.github.io/FRC7/">GitHub Pages</a></p>
+    <div class="grid">
+      <img src="img/frc7-control-panel.png" alt="Control panel" />
+      <img src="img/frc7-neuriy-chat.png" alt="Neuriy chat" />
+      <img src="img/frc7-neuriy-code.png" alt="Neuriy code" />
+      <img src="img/frc7-neuriy-models.png" alt="Models list" />
+    </div>
+  </main>
 </body>
 </html>

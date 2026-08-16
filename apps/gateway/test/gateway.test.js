@@ -17,11 +17,13 @@ describe("gateway", () => {
   before(async () => { useMemoryQueue(); ctx = await listen(createApp()); });
   after(async () => ctx.close());
 
-  it("health + models", async () => {
+  it("health + models include neuriy", async () => {
     const h = await (await fetch(`${ctx.url}/health`)).json();
     assert.equal(h.ok, true);
+    assert.ok(h.neuriy);
     const m = await (await fetch(`${ctx.url}/v1/models`)).json();
     assert.ok(m.models.some((x) => x.id === "ayiti.search"));
+    assert.ok(m.models.some((x) => x.id === "neuriy.chat"));
   });
 
   it("forbids generic models", async () => {
@@ -31,6 +33,17 @@ describe("gateway", () => {
       body: JSON.stringify({ input: "x", sync: true }),
     });
     assert.equal(res.status, 403);
+  });
+
+  it("neuriy chat endpoint", async () => {
+    const res = await fetch(`${ctx.url}/v1/chat`, {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-api-key": AYITI_DEMO_KEY },
+      body: JSON.stringify({ model: "neuriy.chat", message: "Hello Neuriy" }),
+    });
+    assert.equal(res.status, 200);
+    const body = await res.json();
+    assert.ok(body.output.length > 0);
   });
 
   it("lints and runs translate", async () => {
@@ -58,7 +71,7 @@ describe("gateway", () => {
         sync: true,
         jobs: [
           { model: "ayiti.translate", input: "budget" },
-          { model: "ayiti.uxp", input: "{\"from\":\"mef\",\"to\":\"dgi\"}" },
+          { model: "neuriy.chat", input: "hi" },
         ],
       }),
     });

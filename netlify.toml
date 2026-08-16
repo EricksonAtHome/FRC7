@@ -1,0 +1,10 @@
+# Publish directory for Netlify project "frc7"
+# Serves the Neuriy/Ayiti photo gallery (updated FRC7.2 README media).
+[build]
+  publish = "frc-netlify-live/public"
+  command = "echo FRC7 Neuriy gallery"
+
+[[redirects]]
+  from = "/readme"
+  to = "https://github.com/EricksonAtHome/FRC7#readme"
+  status = 302

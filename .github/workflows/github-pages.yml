@@ -1,0 +1,46 @@
+# Deploy FRC7 GitHub Pages gallery (screenshots + Neuriy landing)
+# Build runs on feature branches; deploy only on main (avoids failed PR checks
+# when the github-pages environment is not yet enabled).
+name: GitHub Pages
+
+on:
+  push:
+    branches: [main, "cursor/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare site
+        run: |
+          mkdir -p _site/assets
+          cp docs/index.html _site/index.html
+          cp docs/chatgpt-systems.md _site/chatgpt-systems.md
+          cp -R docs/assets/. _site/assets/
+          cp img/frc7-*.png img/frc7-*.mp4 _site/assets/ 2>/dev/null || true
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,8 +1,8 @@
 {
   "name": "frc7",
-  "version": "7.1.0",
+  "version": "7.2.0",
   "private": true,
-  "description": "FRC7 — Fast Response Connection ecosystem with Ayiti OS (GoV) government models",
+  "description": "FRC7 — Fast Response Connection with Ayiti OS (GoV) and Neuriy AI chat models",
   "type": "module",
   "workspaces": [
     "packages/*",
@@ -13,6 +13,7 @@
     "lint": "node scripts/lint.mjs",
     "demo": "node apps/cli/src/index.js run examples/basic/hello.frcl",
     "demo:ayiti": "node apps/cli/src/index.js run examples/ayiti/search.frcl",
+    "demo:neuriy": "node apps/cli/src/index.js exec neuriy.chat \"Hello Neuriy\"",
     "start:gateway": "npm run start -w @frc/gateway",
     "frc": "node apps/cli/src/index.js",
     "dev": "node scripts/dev.mjs"
@@ -27,6 +28,9 @@
     "ayiti",
     "haiti",
     "government",
+    "neuriy",
+    "chatgpt",
+    "llm",
     "ai"
   ],
   "license": "MIT",

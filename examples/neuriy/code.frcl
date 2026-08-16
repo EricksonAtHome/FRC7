@@ -1,0 +1,12 @@
+set env "prod"
+region ht
+
+run model neuriy.code {
+  input "Write a tiny JavaScript function that counts tokens roughly by splitting on spaces"
+}
+
+run model neuriy.marketplace {
+  input "assistants for coding"
+}
+
+print result

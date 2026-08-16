@@ -6,6 +6,11 @@ import {
 import { analyze, lint } from "@frc/frcl";
 import { executeFrcl, executeJob, listModels } from "@frc/engine";
 import { healthcheck as ayitiHealth, AYITI_OS } from "@ayiti/gov";
+import {
+  NEURIY_AI, healthcheck as neuriyHealth, chat, chatCompletions,
+  createChatSession, getSession, listSessions, listModels as listNeuriyModels,
+  searchMarketplace, localCatalog,
+} from "@neuriy/ai";
 
 export function createApp(options = {}) {
   const app = express();
@@ -14,19 +19,26 @@ export function createApp(options = {}) {
 
   app.get("/health", async (_req, res) => {
     let ayiti = null;
+    let neuriy = null;
     try { ayiti = await ayitiHealth(); } catch (e) { ayiti = { ok: false, error: e.message }; }
+    try { neuriy = await neuriyHealth(); } catch (e) { neuriy = { ok: false, error: e.message }; }
     res.json({
-      ok: true, service: "frc7-gateway", version: "7.1.0",
-      queue: queueBackend(), metrics: getMetrics(), ayiti,
+      ok: true, service: "frc7-gateway", version: "7.2.0",
+      queue: queueBackend(), metrics: getMetrics(), ayiti, neuriy,
     });
   });
 
   app.get("/v1/models", (_req, res) => {
     res.json({
       os: AYITI_OS,
-      policy: "Ayiti OS (GoV) models by default. Set FRC_ALLOW_BUILTIN=1 for echo/summarizer/coder demos.",
+      ai: NEURIY_AI,
+      policy: "Neuriy chat + Ayiti OS GoV models. Set FRC_ALLOW_BUILTIN=1 for echo/summarizer/coder demos.",
       models: listModels(),
     });
+  });
+
+  app.get("/v1/neuriy/models", (_req, res) => {
+    res.json({ ai: NEURIY_AI, models: listNeuriyModels() });
   });
 
   app.get("/v1/metrics", auth, (_req, res) => {
@@ -61,9 +73,72 @@ export function createApp(options = {}) {
     }
   });
 
+  /** Neuriy ChatGPT-style chat */
+  app.post("/v1/chat", auth, async (req, res) => {
+    try {
+      const model = req.body?.model || "neuriy.chat";
+      const message = req.body?.message ?? req.body?.input;
+      if (message == null && !req.body?.messages) {
+        return res.status(400).json({ error: "message or messages required" });
+      }
+      const result = await chat({
+        model,
+        message,
+        messages: req.body?.messages,
+        sessionId: req.body?.sessionId,
+        system: req.body?.system,
+        meta: { region: resolveRegion({ region: req.body?.region || "ht" }), ...req.body?.meta },
+        useTools: req.body?.tools !== false,
+      });
+      res.json({ status: "completed", ...result });
+    } catch (err) {
+      const status = err.code === "NEURIY_MODEL_UNKNOWN" || err.code === "FRC_MODEL_FORBIDDEN" ? 403
+        : err.code === "NEURIY_SESSION_NOT_FOUND" ? 404 : 500;
+      res.status(status).json({ error: err.message, code: err.code });
+    }
+  });
+
+  /** OpenAI-compatible chat completions shape */
+  app.post("/v1/chat/completions", auth, async (req, res) => {
+    try {
+      const completion = await chatCompletions(req.body || {});
+      res.json(completion);
+    } catch (err) {
+      res.status(err.code === "NEURIY_MODEL_UNKNOWN" ? 403 : 500).json({ error: err.message, code: err.code });
+    }
+  });
+
+  app.post("/v1/neuriy/sessions", auth, (req, res) => {
+    const session = createChatSession({
+      model: req.body?.model || "neuriy.chat",
+      system: req.body?.system,
+      meta: req.body?.meta || {},
+    });
+    res.status(201).json(session);
+  });
+
+  app.get("/v1/neuriy/sessions", auth, (_req, res) => {
+    res.json({ sessions: listSessions() });
+  });
+
+  app.get("/v1/neuriy/sessions/:id", auth, (req, res) => {
+    const s = getSession(req.params.id);
+    if (!s) return res.status(404).json({ error: "session_not_found" });
+    res.json(s);
+  });
+
+  app.get("/v1/neuriy/marketplace", auth, async (req, res) => {
+    try {
+      const data = await searchMarketplace({ q: req.query.q, category: req.query.category });
+      res.json(data);
+    } catch (err) {
+      res.status(500).json({ error: err.message, apps: localCatalog() });
+    }
+  });
+
   async function handleRun(req, res) {
     try {
-      const input = req.body?.input;
+      const input = req.body?.input ?? req.body?.message;
       if (input == null || input === "") return res.status(400).json({ error: "input is required" });
       const region = resolveRegion({
         region: req.body?.region || req.headers["x-frc-region"] || "ht",
@@ -72,22 +147,32 @@ export function createApp(options = {}) {
       const sync = req.body?.sync !== false && req.query.sync !== "0";
       const webhook = req.body?.webhook;
 
+      // Neuriy: allow passing session via body
+      const jobInput = req.body?.sessionId || req.body?.messages || req.body?.system
+        ? {
+            message: typeof input === "string" ? input : input.message || input,
+            sessionId: req.body?.sessionId,
+            messages: req.body?.messages,
+            system: req.body?.system,
+          }
+        : input;
+
       if (sync) {
         const result = await executeJob({
-          model: req.params.model, input,
-          meta: { region, env: req.body?.env || "prod", lang: req.body?.lang, webhook },
+          model: req.params.model, input: jobInput,
+          meta: { region, env: req.body?.env || "prod", lang: req.body?.lang, webhook, sessionId: req.body?.sessionId },
         });
         if (webhook) await deliverWebhook(webhook, { type: "frc.job.completed", result });
         return res.json({ status: "completed", region, result });
       }
 
       const job = await enqueueJob({
-        model: req.params.model, input, region, apiKeyHash: req.apiKeyHash,
-        meta: { env: req.body?.env || "prod", webhook, lang: req.body?.lang },
+        model: req.params.model, input: jobInput, region, apiKeyHash: req.apiKeyHash,
+        meta: { env: req.body?.env || "prod", webhook, lang: req.body?.lang, sessionId: req.body?.sessionId },
       });
       res.status(202).json({ status: "queued", jobId: job.id, region, poll: `/v1/jobs/${job.id}` });
     } catch (err) {
-      const status = err.code === "FRC_MODEL_FORBIDDEN" || err.code === "AYITI_MODEL_FORBIDDEN" ? 403 : 500;
+      const status = err.code === "FRC_MODEL_FORBIDDEN" || err.code === "AYITI_MODEL_FORBIDDEN" || err.code === "NEURIY_MODEL_UNKNOWN" ? 403 : 500;
       res.status(status).json({ error: err.message, code: err.code });
     }
   }
@@ -129,7 +214,7 @@ export function createApp(options = {}) {
       if (!analyzed.validation.ok) {
         return res.status(400).json({ error: "invalid_frcl", details: analyzed.validation });
       }
-      const region = resolveRegion({ region: req.body?.region || analyzed.plan.region || "ht" });
+      const region = resolveRouteRegion(req, analyzed);
       if (req.body?.sync === false) {
         const jobs = [];
         for (const run of analyzed.plan.runs) {
@@ -141,14 +226,13 @@ export function createApp(options = {}) {
         return res.status(202).json({ status: "queued", jobs, plan: analyzed.plan });
       }
       const out = await executeFrcl(source, { region, env: analyzed.plan.env });
-      // deliver webhooks from plan runs
       for (let i = 0; i < analyzed.plan.runs.length; i++) {
         const wh = analyzed.plan.runs[i].webhook;
         if (wh) await deliverWebhook(wh, { type: "frc.run.completed", result: out.results[i] });
       }
       res.json({ status: "completed", region, plan: out.plan, results: out.results, output: out.output });
     } catch (err) {
-      const status = err.code === "FRC_MODEL_FORBIDDEN" || err.code === "AYITI_MODEL_FORBIDDEN" ? 403 : 500;
+      const status = err.code === "FRC_MODEL_FORBIDDEN" || err.code === "AYITI_MODEL_FORBIDDEN" || err.code === "NEURIY_MODEL_UNKNOWN" ? 403 : 500;
       res.status(status).json({ error: err.message, code: err.code });
     }
   });
@@ -170,7 +254,6 @@ export function createApp(options = {}) {
     }
   });
 
-  /** Embedded worker tick for demos without a separate process */
   app.post("/v1/worker/tick", auth, async (req, res) => {
     const job = await dequeueJob({ timeoutSec: 0 });
     if (!job) return res.json({ processed: 0 });
@@ -186,4 +269,8 @@ export function createApp(options = {}) {
   });
 
   return app;
+}
+
+function resolveRouteRegion(req, analyzed) {
+  return resolveRegion({ region: req.body?.region || analyzed.plan.region || "ht" });
 }

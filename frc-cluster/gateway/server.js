@@ -1,7 +1,9 @@
 import express from "express";
 import fetch from "node-fetch";
+import helmet from "helmet";
 
 const app = express();
+app.use(helmet());
 app.use(express.json());
 
 function getNode(country) {
